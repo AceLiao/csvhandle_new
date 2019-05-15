@@ -1,33 +1,32 @@
-
+import xlrd
 import pandas as pd
-from os import path
-import openp
+import openpyxl
+path=r'C:\Users\jianya_liao\Desktop\test_package\outdata.xlsx'
+file =xlrd.open_workbook(path)
+table=file.sheets()[0]
+names =file.sheet_names()
+print(table)
+print('name:',names)
 
-file1=r'C:\Users\jianya_liao\Desktop\test_package\S066B001H0307002-S99139.csv'
-file2=r'C:\Users\jianya_liao\Desktop\test_package\S99139.csv'
-outfile = r'C:\Users\jianya_liao\Desktop\test_package\123.xlsx'
-f=open(file1)
-iron_name = path.basename(file1).rstrip('.csv').split('-')[1]
-print(iron_name)
-df1 = pd.read_csv(file1,header=None,skiprows=18)
-f.close()
-df1 =df1[0:14]
-df1.dropna(how='all',axis=1,inplace=True)
-df1.rename(columns={0:'序号', 1:'Wafer'}, inplace = True)
-df1.insert(0,'iron_name',iron_name)
-# print(df1.head())
-f=open(file2)
-df2 = pd.read_csv(f)
 
-df2.insert(0,'iron_name',iron_name)
-df2.dropna(how='all',axis=1,inplace=True)
-print(df2.head())
-f.close()
-# alldata=[]
-# alldata.append(df1)
-# alldata.append(df2)
-# out = pd.concat(alldata,axis=1,keys=['iron_name','序号'],join='outer')
-# print(out.head())
-out=pd.merge(df1,df2)
-out.to_excel(outfile,sheet_name='123')
-out.to_excel(outfile,sheet_name='1234',startrow=20)
+## 行列操作
+nrows =table.nrows  # ncols
+table_row=table.row(5)  #table.col()
+print(nrows)#43
+print(table_row)#[text:'F01590', number:5.0, text:'18CSV21B190227C12Q', number:3.057, number:0.004, number:105.098, number:448.5, number:54.0, number:60.0, number:3.18, number:0.0, number:98.41]
+print(table.row_types(5))  #array('B', [1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2])
+print(table.row_len(4))  #12
+print(table.row_values(3))
+
+#单元格操作
+print(table.cell(1,2))  #(行，列)  #t  ext:'18CSV21B190227C12Q'
+print(table.cell_type(1,2)) #返回1代表数字，2代表字符
+print(table.cell_value(1,2))
+
+wb=openpyxl.load_workbook(r'C:\Users\jianya_liao\Desktop\test_package\outdata.xlsx')
+ws=wb.create_sheet('Mysheet1')
+
+
+row=[1,2,3,4]
+ws.append(row)
+wb.save('new.xlsx')
